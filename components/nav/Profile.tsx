@@ -16,12 +16,12 @@ export default function Profile() {
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  );
 
-const handleLogout = async() => {
-  await  supabase.auth.signOut(),
-  setUser(undefined)
-};
+  const handleLogout = async () => {
+    await supabase.auth.signOut(), setUser(undefined);
+  };
+  const isAdmin = user?.user_metadata?.role === "admin";
   return (
     <Popover>
       <PopoverTrigger>
@@ -35,26 +35,27 @@ const handleLogout = async() => {
         />
       </PopoverTrigger>
       <PopoverContent className="space-y-3 p-2 divide-y">
-      <div className="px-4">
-					<p className="text-sm">{user?.user_metadata?.user_name}</p>
-					<p className="text-sm text-gray-500">{user?.user_metadata?.email}</p>
-				</div>
-                <Link href="/dashboard" className="block">
-						<Button
-							variant="ghost"
-							className="w-full flex justify-between items-center"
-                           
-						>
-							Dashboard  <LayoutDashboard />
-						</Button>
-					</Link>
-                    <Button
-							variant="ghost"
-							className="w-full flex justify-between items-center"
-                            onClick={handleLogout}
-						>
-							Logout   <LockOpen />
-						</Button>
+        <div className="px-4">
+          <p className="text-sm">{user?.user_metadata?.user_name}</p>
+          <p className="text-sm text-gray-500">{user?.user_metadata?.email}</p>
+        </div>
+        {isAdmin && (
+          <Link href="/dashboard" className="block">
+            <Button
+              variant="ghost"
+              className="w-full flex justify-between items-center"
+            >
+              Dashboard <LayoutDashboard />
+            </Button>
+          </Link>
+        )}
+        <Button
+          variant="ghost"
+          className="w-full flex justify-between items-center"
+          onClick={handleLogout}
+        >
+          Logout <LockOpen />
+        </Button>
       </PopoverContent>
     </Popover>
   );
