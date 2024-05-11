@@ -17,13 +17,14 @@ export default function Navlinks() {
         Icon: <CircleUserRound />
     },
 ]
+
   return (
     <div className="flex items-center gap-5 border-b pb-2">
       {
         link.map((link, index) => {
             return <Link href={link.href} key={index} className={cn(
                 "text-sm text-gray-400 flex  items-center gap-1 hover:underline transition-all",
-                { "text-green-500 underline": pathname === link.href }
+                { "text-blue-500 underline": pathname === link.href }
             )}>{link.Icon}{link.text}</Link>
         })
       }
