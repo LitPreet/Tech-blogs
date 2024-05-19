@@ -1,7 +1,7 @@
 'use server'
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
-import { Database } from "../types/supabase";
+import { Database } from "@/lib/types/supabase";
 import { createClient } from "@supabase/supabase-js";
 
 export async function createSupabaseServerClient(){

@@ -22,7 +22,6 @@ export default function Page(){
           </pre>
       )
    })
-   console.log(error.message)
    }else{
     toast({
       title:"Successfully created" + data.title,

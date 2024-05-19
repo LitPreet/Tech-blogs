@@ -8,13 +8,14 @@ import { createSupabaseServerClient } from "../supabase";
 const DASHBOARD = "/dashboard"
 
 export async function createBlog(data: BlogFormSchemaType) {
-  const { ["content"]: excludedKey, ...blog } = data;
+  // const { ["content"]: excludedKey, ...blog } = data;
+  const {content,...blog} = data
   const supabase = await createSupabaseServerClient()
   const resultBlog = await supabase.from("blog").insert(blog).select("id").single();
   if (resultBlog.error) {
     return JSON.stringify(resultBlog)
   } else {
-    const result = await supabase.from("blog_content").insert({ blog_id: resultBlog?.data?.id!, content: data.content })
+    const result = await supabase.from("blog_content").insert({ blog_id: resultBlog?.data?.id!, content })
     revalidatePath(DASHBOARD);
     return JSON.stringify(result)
   }
@@ -54,16 +55,17 @@ export async function readBlogContentById(blogId: string) {
 }
 
 export async function upadteBlogDetail(blogId: string, data: BlogFormSchemaType) {
-  const {["content"]: excludedKey, ...blog } = data;
+  // const {["content"]: excludedKey, ...blog } = data;
+  const {content, ...blog} = data;
   const supabase = await createSupabaseServerClient()
   const resultBlog = await supabase.from('blog').update(blog).eq("id", blogId)
-  if (resultBlog.error) {
+  if (resultBlog.error?.message && !resultBlog.data) {
     return JSON.stringify(resultBlog)
   }
   else {
     const result = await supabase
     .from("blog_content")
-    .update({ content: data.content })
+    .update({content})
     .eq("blog_id", blogId);
     revalidatePath(DASHBOARD)
     return JSON.stringify(result)
