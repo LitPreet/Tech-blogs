@@ -20,6 +20,8 @@ export default function SessionProvider() {
 
   useEffect(() => {
     readUserSession();
+    // eslint-disable-next-line
   }, []);
-  return <div></div>;
+
+  return <></>;
 }
