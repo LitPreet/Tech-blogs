@@ -11,6 +11,7 @@ export default function Checkout() {
   const [isPending, startTransition] = useTransition();
   const user = useUser((state) => state.user);
   const pathName = usePathname();
+  console.log(location.origin + pathName);
   if (!user) {
     return (
       <div className="flex items-center justify-center h-96 gap-2">

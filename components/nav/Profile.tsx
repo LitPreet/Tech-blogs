@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { LayoutDashboard, LockOpen } from "lucide-react";
 import { createBrowserClient } from "@supabase/ssr";
+import ManageBill from "../stripe/ManageBillings";
 
 export default function Profile() {
   const user = useUser((state) => state.user);
@@ -19,16 +20,17 @@ export default function Profile() {
   );
 
   const handleLogout = async () => {
-    await supabase.auth.signOut(), setUser(undefined);
+    await supabase.auth.signOut(), setUser(null);
   };
-  const isAdmin = user?.user_metadata?.role === "admin";
+  const isAdmin = user?.role === "admin";
+  const isSub = user?.subscriptions;
   return (
     <Popover>
       <PopoverTrigger>
         {" "}
         <Image
-          src={user?.user_metadata.avatar_url}
-          alt={user?.user_metadata.user_name}
+          src={user?.image_url || ''}
+          alt={user?.display_name || ''}
           width={50}
           height={50}
           className="rounded-full ring-2 ring-green-500"
@@ -36,8 +38,8 @@ export default function Profile() {
       </PopoverTrigger>
       <PopoverContent className="space-y-3 p-2 divide-y">
         <div className="px-4">
-          <p className="text-sm">{user?.user_metadata?.user_name}</p>
-          <p className="text-sm text-gray-500">{user?.user_metadata?.email}</p>
+          <p className="text-sm">{user?.display_name}</p>
+          <p className="text-sm text-gray-500">{user?.email}</p>
         </div>
         {isAdmin && (
           <Link href="/dashboard" className="block">
@@ -49,6 +51,7 @@ export default function Profile() {
             </Button>
           </Link>
         )}
+        {isSub && <ManageBill customerId={user?.stripe_cutsomer_id as string}/>}
         <Button
           variant="ghost"
           className="w-full flex justify-between items-center"

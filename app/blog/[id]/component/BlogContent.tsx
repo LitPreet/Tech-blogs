@@ -10,6 +10,7 @@ interface BlogData {
   blog_id: string;
   content: string;
   created_at: string;
+  is_Premium: boolean;
 }
 
 export default function Content({ blogId }: { blogId: string }) {
@@ -39,8 +40,8 @@ export default function Content({ blogId }: { blogId: string }) {
     return <BlogContentLoading />;
   }
   if (!blog?.content) {
-    return <Checkout />;
-  }
+		return <Checkout />;
+	}
   
   return <MarkdownPreview content={blog?.content || ""} />;
 }

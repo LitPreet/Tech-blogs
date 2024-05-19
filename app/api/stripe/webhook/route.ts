@@ -28,7 +28,7 @@ export async function POST(req: any) {
             //     break;
 			case "customer.subscription.deleted":
 				const deleteSubscription = event.data.object;
-				await onCacnelSubscription(
+				await onCancelSubscription(
 					deleteSubscription.status === "active",
 					deleteSubscription.id
 				);
@@ -40,12 +40,15 @@ export async function POST(req: any) {
 				});
 				if (subscription.data.length) {
 					const sub = subscription.data[0];
-					await onSuccessSubscription(
+				const { error } = await onSuccessSubscription(
+						sub.status === "active",
 						sub.id,
 						customer.id,
-						sub.status === "active",
 						customer.email!
 					);
+					if(error?.message){
+						return Response.json({"error": error.message})
+					}
 				}
 			default:
 				console.log(`Unhandled event type ${event.type}`);
@@ -57,28 +60,30 @@ export async function POST(req: any) {
 }
 
 const onSuccessSubscription = async (
+	status: boolean,
 	subscription_id: string,
 	customer_id: string,
-	status: boolean,
 	email: string
 ) => {
+	// console.log('subscribe called',status,subscription_id,email,customer_id);
 	const supabase = await createSupbaseAdmin();
-	const { data } = await supabase
+	return await supabase
 		.from("users")
 		.update({
 			stripe_subscription_id: subscription_id,
-			stripe_customer_id: customer_id,
-			subscription_status: status,
+			stripe_cutsomer_id: customer_id,
+			subscriptions: status,
 		})
 		.eq("email", email)
-		.select("id")
-		.single();
-	await supabase.auth.admin.updateUserById(data?.id!, {
-		user_metadata: { stripe_customer_id: null },
-	});
+		// .select("id")
+		// .single();
+		// 	await supabase.auth.admin.updateUserById(data!.id, {
+		// 		user_metadata: { stripe_customer_id: null },
+		// 	});
+		
 };
 
-const onCacnelSubscription = async (
+const onCancelSubscription = async (
 	status: boolean,
 	subscription_id: string
 ) => {
@@ -87,8 +92,8 @@ const onCacnelSubscription = async (
 		.from("users")
 		.update({
 			stripe_subscription_id: null,
-			stripe_customer_id: null,
-			subscription_status: status,
+			stripe_cutsomer_id: null,
+			subscriptions: status,
 		})
 		.eq("stripe_subscriptoin_id", subscription_id)
 		.select("id")
