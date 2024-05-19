@@ -3,34 +3,34 @@ import Image from "next/image";
 import Content from "./component/BlogContent";
 import { IBlog } from "@/lib/types";
 
-// export async function generateStaticParams() {
-// 	const { data: blogs } = await fetch(
-// 		process.env.SITE_URL + "/api/blog?id=" + "*"
-// 	).then((res) => res.json());
+export async function generateStaticParams() {
+	const { data: blogs } = await fetch(
+		process.env.SITE_URL + "/api/blog?id=" + "*"
+	).then((res) => res.json());
 
-// 	return blogs;
-// }
+	return blogs;
+}
 
-// export async function generateMetadata({ params }: { params: { id: string } }) {
-// 	const { data: blog } = (await fetch(
-// 		process.env.SITE_URL + "/api/blog?id=" + params.id
-// 	).then((res) => res.json())) as { data: IBlog };
+export async function generateMetadata({ params }: { params: { id: string } }) {
+	const { data: blog } = (await fetch(
+		process.env.SITE_URL + "/api/blog?id=" + params.id
+	).then((res) => res.json())) as { data: IBlog };
 
-// 	return {
-// 		title: blog?.title,
-// 		authors: {
-// 			name: "preet bhardwaj",
-// 		},
-// 		openGraph: {
-// 			title: blog?.title,
-// 			url: "https://dailyblog-demo.vercel.app/blog" + params.id,
-// 			siteName: "Tech Blogs",
-// 			images: blog?.image_url,
-// 			type: "website",
-// 		},
-// 		keywords: ["daily tech blogs", "preet", "dailytechblogs"],
-// 	};
-// }
+	return {
+		title: blog?.title,
+		authors: {
+			name: "preet bhardwaj",
+		},
+		openGraph: {
+			title: blog?.title,
+			url: "https://tech-blogs2.vercel.app/blog" + params.id,
+			siteName: "Tech Blogs",
+			images: blog?.image_url,
+			type: "website",
+		},
+		keywords: ["daily tech blogs", "preet", "dailytechblogs"],
+	};
+}
 
 
 export default async function page({ params }: { params: { id: string } }) {
